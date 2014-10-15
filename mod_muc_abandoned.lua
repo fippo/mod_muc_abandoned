@@ -21,14 +21,18 @@ module:hook("muc-occupant-left", function (event)
 		end
 	end
 	if room:get_affiliation(occupant.bare_jid) == "owner" and room:get_persistent() == nil then
-		-- FIXME: only if this was the only owner
 		if room:has_occupant() then
+			local ok, err = room:set_affiliation(occupant.bare_jid, occupant.bare_jid, nil)
+			-- FIXME: only if this was the only owner
+
 			-- pick the oldest occupant
 			local next_occupant = room:get_occupant_by_nick(occupants[room.jid][1])
 			-- FIXME: occupant.bare_jid should no longer be necessary soon, bug is fixed in trunk,
 			-- just pass true
 			local ok, err = room:set_affiliation(occupant.bare_jid, next_occupant.bare_jid, "owner")
-			-- FIXME: remove old owner
+
+			--module:log("debug", "%s %s", tostring(ok), tostring(err));
+			--module:log("debug", "room %s", serialization.serialize(room))
 		end
 	end
 end, 2);
