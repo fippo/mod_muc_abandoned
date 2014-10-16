@@ -2,7 +2,9 @@
 -- LICENSE: MIT
 local serialization = require "util.serialization"
 
+-- < daurnimator> fippo, ps; when you have something like that `occupants` table. use module:shared.
 local occupants = {}
+
 module:hook("muc-occupant-joined", function (event)
         local room, nick, occupant = event.room, event.nick, event.occupant
 	if not occupants[room.jid] then occupants[room.jid] = {}; end
@@ -25,6 +27,7 @@ module:hook("muc-occupant-left", function (event)
 			local has_owner = 0
 			for owner in room:each_affiliation("owner") do
 				has_owner = has_owner + 1
+                break
 			end
 			if has_owner == 1 then
 				-- pick the oldest occupant
